@@ -4,7 +4,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Text;
 
-namespace AsynchronousClient
+namespace MRCStudio
 {
   // State object for receiving data from remote device.
   public class StateObject
@@ -18,25 +18,24 @@ namespace AsynchronousClient
     // Received data string.
     public StringBuilder sb = new StringBuilder();
   }
-
   public class AsynchronousClient
   {
     // The port number for the remote device.
     private const int Port = 11000;
-    private static string HostName = Dns.GetHostName();
+    private string HostName = Dns.GetHostName();
 
     // ManualResetEvent instances signal completion.
-    private static ManualResetEvent connectDone =
+    private ManualResetEvent connectDone =
         new ManualResetEvent(false);
-    private static ManualResetEvent sendDone =
+    private ManualResetEvent sendDone =
         new ManualResetEvent(false);
-    private static ManualResetEvent receiveDone =
+    private ManualResetEvent receiveDone =
         new ManualResetEvent(false);
 
     // The response from the remote device.
-    private static String response = String.Empty;
+    private String response = String.Empty;
 
-    private static void StartClient()
+    public void StartClient()
     {
       // Connect to a remote device.
       try
@@ -48,40 +47,31 @@ namespace AsynchronousClient
         IPAddress ipAddress = ipHostInfo.AddressList[0];
         IPEndPoint remoteEP = new IPEndPoint(ipAddress, Port);
 
-        while (true)
-        {
-          using (Socket client = new Socket(AddressFamily.InterNetwork,
-              SocketType.Stream, ProtocolType.Tcp))
-          {
-            connectDone = new ManualResetEvent(false);
-            sendDone = new ManualResetEvent(false);
-            receiveDone = new ManualResetEvent(false);
+        // Create a TCP/IP socket.
+        Socket client = new Socket(AddressFamily.InterNetwork,
+            SocketType.Stream, ProtocolType.Tcp);
 
-            client.BeginConnect(remoteEP,
-                new AsyncCallback(ConnectCallback), client);
-            connectDone.WaitOne();
+        // Connect to the remote endpoint.
+        client.BeginConnect(remoteEP,
+            new AsyncCallback(ConnectCallback), client);
+        connectDone.WaitOne();
 
-            string myCommand = "";
-            Console.WriteLine("Enter command:");
-            myCommand = Console.ReadLine();
-            if (myCommand == "quit")
-              break;
+        Console.Write("Write a SQL Command: ");
+        string sqlCommand = Console.ReadLine();
+        // Send test data to the remote device.
+        Send(client, sqlCommand + "<EOF>");
+        sendDone.WaitOne();
 
-            // Send test data to the remote device.
-            Send(client, myCommand + "<EOF>");
-            sendDone.WaitOne();
+        // Receive the response from the remote device.
+        Receive(client);
+        receiveDone.WaitOne();
 
-            // Receive the response from the remote device.
-            Receive(client);
-            receiveDone.WaitOne();
+        // Write the response to the console.
+        Console.WriteLine("Response received : {0}", response);
 
-            // Write the response to the console.
-            Console.WriteLine("Response received : {0}", response);
-            // Release the socket.
-            client.Shutdown(SocketShutdown.Both);
-            client.Close();
-          }
-        }
+        // Release the socket.
+        client.Shutdown(SocketShutdown.Both);
+        client.Close();
       }
       catch (Exception e)
       {
@@ -89,7 +79,7 @@ namespace AsynchronousClient
       }
     }
 
-    private static void ConnectCallback(IAsyncResult ar)
+    private void ConnectCallback(IAsyncResult ar)
     {
       try
       {
@@ -111,7 +101,7 @@ namespace AsynchronousClient
       }
     }
 
-    private static void Receive(Socket client)
+    private void Receive(Socket client)
     {
       try
       {
@@ -129,7 +119,7 @@ namespace AsynchronousClient
       }
     }
 
-    private static void ReceiveCallback(IAsyncResult ar)
+    private void ReceiveCallback(IAsyncResult ar)
     {
       try
       {
@@ -167,7 +157,7 @@ namespace AsynchronousClient
       }
     }
 
-    private static void Send(Socket client, String data)
+    private void Send(Socket client, String data)
     {
       // Convert the string data to byte data using ASCII encoding.
       byte[] byteData = Encoding.ASCII.GetBytes(data);
@@ -177,7 +167,7 @@ namespace AsynchronousClient
           new AsyncCallback(SendCallback), client);
     }
 
-    private static void SendCallback(IAsyncResult ar)
+    private void SendCallback(IAsyncResult ar)
     {
       try
       {
@@ -197,10 +187,8 @@ namespace AsynchronousClient
       }
     }
 
-    public static int Main(String[] args)
+    public AsynchronousClient()
     {
-      StartClient();
-      return 0;
     }
   }
 }

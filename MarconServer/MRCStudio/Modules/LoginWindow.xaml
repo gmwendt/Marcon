@@ -1,0 +1,21 @@
+﻿<Window x:Class="MRCStudio.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MRCStudio"
+        mc:Ignorable="d"
+        Title="LoginWindow" Height="183.913" Width="247.159">
+  <Grid>
+    <ComboBox x:Name="comboBoxServer" HorizontalAlignment="Left" Margin="103,23,0,0" VerticalAlignment="Top" Width="120" IsEditable="True"/>
+    <ComboBox x:Name="comboBoxAuthType" HorizontalAlignment="Left" Margin="103,47,0,0" VerticalAlignment="Top" Width="120" IsEditable="True"/>
+    <TextBox x:Name="textBoxUserName" HorizontalAlignment="Left" Height="19" Margin="103,71,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+    <TextBox x:Name="textBoxPassword" HorizontalAlignment="Left" Height="19" Margin="103,95,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+    <Label x:Name="lblServer" Content="Server:" HorizontalAlignment="Left" Margin="10,19,0,0" VerticalAlignment="Top"/>
+    <Label x:Name="lblAuthType" Content="Authentication:" HorizontalAlignment="Left" Margin="10,43,0,0" VerticalAlignment="Top"/>
+    <Label x:Name="lblUserName" Content="User Name:" HorizontalAlignment="Left" Margin="10,67,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.629,2.428"/>
+    <Label x:Name="label_Copy2" Content="Password:" HorizontalAlignment="Left" Margin="10,91,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.534,3.577"/>
+    <Button x:Name="btnConnect" Content="Connect" HorizontalAlignment="Left" Margin="103,127,0,0" VerticalAlignment="Top" Width="55"/>
+    <Button x:Name="btnCancel" Content="Cancel" HorizontalAlignment="Left" Margin="168,127,0,0" VerticalAlignment="Top" Width="55" RenderTransformOrigin="0.186,1.303"/>
+  </Grid>
+</Window>

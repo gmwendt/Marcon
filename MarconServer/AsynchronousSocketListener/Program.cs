@@ -26,7 +26,7 @@
     // Thread signal.
     public static ManualResetEvent allDone = new ManualResetEvent(false);
 
-    private static DBEngine l_dbEngine;
+    private static DBEngine _dbEngine;
 
     public AsynchronousSocketListener()
     {
@@ -48,7 +48,7 @@
       Socket listener = new Socket(AddressFamily.InterNetwork,
           SocketType.Stream, ProtocolType.Tcp);
 
-      l_dbEngine = new DBEngine();
+      _dbEngine = new DBEngine();
 
       // Bind the socket to the local endpoint and listen for incoming connections.
       try
@@ -127,8 +127,8 @@
               content.Length, content);
 
           //Execute Non Query Command
-          string queryStr = content.Replace("<EOF>", "");
-          l_dbEngine.ExecuteCommand(queryStr);
+          //string queryStr = content.Replace("<EOF>", "");
+          //l_dbEngine.ExecuteCommand(queryStr);
 
           // Echo the data back to the client.
           Send(handler, content);

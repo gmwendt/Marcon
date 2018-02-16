@@ -20,7 +20,11 @@ namespace MRCStudio
       MainWindow main = new MainWindow();
       MRCStudioViewModel context = new MRCStudioViewModel();
       main.DataContext = context;
-      main.Show();
+
+      if (context.CurrentUser != null)
+        main.Show();
+      else
+        main.Close();
     }
   }
 }

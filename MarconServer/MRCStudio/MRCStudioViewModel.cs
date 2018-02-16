@@ -25,7 +25,14 @@ namespace MRCStudio
       PageViewModels.Add(new ProductsViewModel());
 
       // Set starting page
-      CurrentPageViewModel = PageViewModels[0];
+      if(CurrentUser != null)
+        CurrentPageViewModel = PageViewModels[0];
+      else
+      {
+        LoginWindow loginWindow = new LoginWindow(this);
+        loginWindow.ShowDialog();
+      }
+
     }
 
     #region Properties / Commands
@@ -71,6 +78,8 @@ namespace MRCStudio
         }
       }
     }
+
+    public User CurrentUser;
 
     #endregion
 

@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Helper Classes\AsynchronousClient.cs" />
     <Compile Include="Helper Classes\ObservableObject.cs" />
     <Compile Include="Helper Classes\RelayCommand.cs" />
     <Compile Include="Home\HomeView.xaml.cs">
@@ -62,6 +63,9 @@
     </Compile>
     <Compile Include="Home\HomeViewModel.cs" />
     <Compile Include="IPageViewModel.cs" />
+    <Compile Include="Modules\LoginWindow.xaml.cs">
+      <DependentUpon>LoginWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MRCStudioViewModel.cs" />
     <Compile Include="Products\ProductModel.cs" />
     <Compile Include="Products\ProductsView.xaml.cs">
@@ -74,6 +78,7 @@
     <Compile Include="UserControls\TabsPanel.xaml.cs">
       <DependentUpon>TabsPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="User\User.cs" />
     <Page Include="Home\HomeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -92,6 +97,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Modules\LoginWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Products\ProductsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

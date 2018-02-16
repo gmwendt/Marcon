@@ -23,8 +23,6 @@ namespace AsynchronousSocketListener
       using (OdbcConnection connection =
                new OdbcConnection(CONN_STR))
       {
-        // The insertSQL string contains a SQL statement that
-        // inserts a new row in the source table.
         OdbcCommand odbcCmd = new OdbcCommand(query, connection);
 
         // Open the connection and execute the insert command.
@@ -37,8 +35,6 @@ namespace AsynchronousSocketListener
         {
           Console.WriteLine(ex.Message);
         }
-        // The connection is automatically closed when the
-        // code exits the using block.
       }
     }
 
@@ -47,8 +43,6 @@ namespace AsynchronousSocketListener
       using (OdbcConnection connection =
                new OdbcConnection(CONN_STR))
       {
-        // The insertSQL string contains a SQL statement that
-        // inserts a new row in the source table.
         OdbcCommand odbcCmd = new OdbcCommand(command, connection);
 
         // Open the connection and execute the insert command.
@@ -62,8 +56,6 @@ namespace AsynchronousSocketListener
           Console.WriteLine(ex.Message);
           return null;
         }
-        // The connection is automatically closed when the
-        // code exits the using block.
       }
     }
 
