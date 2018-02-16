@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AsynchronousSocketListener
+﻿namespace AsynchronousSocketListener
 {
   using System;
   using System.Net;
   using System.Net.Sockets;
-  using System.Security.Cryptography;
   using System.Text;
   using System.Threading;
 
