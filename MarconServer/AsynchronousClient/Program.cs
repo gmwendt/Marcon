@@ -23,7 +23,7 @@ namespace AsynchronousClient
   {
     // The port number for the remote device.
     private const int Port = 11000;
-    private static string HostName = Dns.GetHostName();
+    private static string HostName;// = Dns.GetHostName();
 
     // ManualResetEvent instances signal completion.
     private static ManualResetEvent connectDone =
@@ -199,6 +199,9 @@ namespace AsynchronousClient
 
     public static int Main(String[] args)
     {
+      Console.Write("Type the host name: ");
+      HostName = Console.ReadLine();
+      Console.WriteLine("Connecting to " + HostName + "...");
       StartClient();
       return 0;
     }

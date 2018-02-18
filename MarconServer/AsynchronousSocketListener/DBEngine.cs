@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Odbc;
 using System.Linq;
 using System.Security.Cryptography;
@@ -10,8 +12,8 @@ namespace AsynchronousSocketListener
 {
   public class DBEngine
   {
-    private const string CONN_STR = "Driver={SQL Server};Server=MARCON;Database=MarconDB;";
-    //private const string CONN_STR = "Driver={SQL Server};Server=localhost;UID=sa;PWD=Abcd1234;Database=MarconDB;";
+    //private const string CONN_STR = "Driver={SQL Server};Server=MARCON;Database=MarconDB;";
+    private const string CONN_STR = "Driver={SQL Server};Server=localhost;UID=sa;PWD=Abcd1234;Database=MarconDB;";
 
     public DBEngine()
     {
@@ -49,7 +51,8 @@ namespace AsynchronousSocketListener
         try
         {
           connection.Open();
-          return odbcCmd.ExecuteScalar();
+          object response = odbcCmd.ExecuteScalar();
+          return response;
         }
         catch (Exception ex)
         {
@@ -59,12 +62,28 @@ namespace AsynchronousSocketListener
       }
     }
 
+    public DataTable ReadData(string query)
+    {
+      DataTable response = new DataTable();
+      using (OdbcConnection con = new OdbcConnection(CONN_STR))
+      {
+        con.Open();
+        using (OdbcCommand cmd = new OdbcCommand(query, con))
+        {
+          OdbcDataReader reader = cmd.ExecuteReader();
+          response.Load(reader);
+        }
+      }
+      byte[] pwdTEST = (byte[])response.Rows[0]["PWD"];
+      return response;
+    }
+
     public int AddUser(string username, byte[] password, string salt, string fullname, string userGroup)
     {
       using (OdbcConnection connection =
                new OdbcConnection(CONN_STR))
       {
-        OdbcCommand odbcCmd = new OdbcCommand("INSERT INTO [dbo].[Users] VALUES (?, ?, ?, ?)", connection);
+        OdbcCommand odbcCmd = new OdbcCommand("INSERT INTO [dbo].[Users] VALUES (?, ?, ?, ?, ?)", connection);
         odbcCmd.Parameters.AddWithValue("@USERNAME", username);
         odbcCmd.Parameters.AddWithValue("@PWD", password);
         odbcCmd.Parameters.AddWithValue("@SALT", salt);
@@ -102,8 +121,9 @@ namespace AsynchronousSocketListener
       if (hasTable == "Users")
       {
         string hasSa = (string)ExecuteScalar("SELECT USERNAME FROM dbo.Users WHERE USERNAME='sa'");
+        //byte[] pwd = (byte[])ExecuteScalar("SELECT PWD FROM dbo.Users WHERE USERNAME='sa'");
         if (hasSa != "sa")
-          AddUser("sa", passByte, salt, "Administrator", "Administrator");
+          AddUser("sa", output, salt, "Administrator", "Administrator");
       }
       else
       {
@@ -113,6 +133,7 @@ namespace AsynchronousSocketListener
                           PWD       binary (64)       NOT NULL,
                           SALT      VARCHAR (50)      NOT NULL,
                           FULLNAME  VARCHAR (50)      NOT NULL,
+                          USERGROUP VARCHAR (50)      NOT NULL,
                           PRIMARY KEY (USERID));";
         ExecuteCommand(query);
       }

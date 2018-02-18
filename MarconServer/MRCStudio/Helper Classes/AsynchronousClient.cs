@@ -12,7 +12,7 @@ namespace MRCStudio
     // Client socket.
     public Socket workSocket = null;
     // Size of receive buffer.
-    public const int BufferSize = 256;
+    public const int BufferSize = 25600;
     // Receive buffer.
     public byte[] buffer = new byte[BufferSize];
     // Received data string.
@@ -22,7 +22,7 @@ namespace MRCStudio
   {
     // The port number for the remote device.
     private const int Port = 11000;
-    private string HostName = Dns.GetHostName();
+    private string _hostName;
 
     // ManualResetEvent instances signal completion.
     private ManualResetEvent connectDone =
@@ -33,9 +33,9 @@ namespace MRCStudio
         new ManualResetEvent(false);
 
     // The response from the remote device.
-    private String response = String.Empty;
+    private byte[] response;
 
-    public void StartClient()
+    public void SendCommand(string command, out byte[] responseOutput)
     {
       // Connect to a remote device.
       try
@@ -43,7 +43,7 @@ namespace MRCStudio
         // Establish the remote endpoint for the socket.
         // The name of the 
         // remote device is "host.contoso.com".
-        IPHostEntry ipHostInfo = Dns.Resolve(HostName);
+        IPHostEntry ipHostInfo = Dns.Resolve(_hostName);
         IPAddress ipAddress = ipHostInfo.AddressList[0];
         IPEndPoint remoteEP = new IPEndPoint(ipAddress, Port);
 
@@ -56,10 +56,10 @@ namespace MRCStudio
             new AsyncCallback(ConnectCallback), client);
         connectDone.WaitOne();
 
-        Console.Write("Write a SQL Command: ");
-        string sqlCommand = Console.ReadLine();
+        //Console.Write("Write a SQL Command: ");
+        //string sqlCommand = Console.ReadLine();
         // Send test data to the remote device.
-        Send(client, sqlCommand + "<EOF>");
+        Send(client, command + "<EOF>");
         sendDone.WaitOne();
 
         // Receive the response from the remote device.
@@ -67,7 +67,8 @@ namespace MRCStudio
         receiveDone.WaitOne();
 
         // Write the response to the console.
-        Console.WriteLine("Response received : {0}", response);
+        //Console.WriteLine("Response received : {0}", response);
+        responseOutput = response;
 
         // Release the socket.
         client.Shutdown(SocketShutdown.Both);
@@ -76,6 +77,7 @@ namespace MRCStudio
       catch (Exception e)
       {
         Console.WriteLine(e.ToString());
+        responseOutput = null;
       }
     }
 
@@ -145,7 +147,8 @@ namespace MRCStudio
           // All the data has arrived; put it in response.
           if (state.sb.Length > 1)
           {
-            response = state.sb.ToString();
+            //response = state.sb.ToString();
+            response = state.buffer;
           }
           // Signal that all bytes have been received.
           receiveDone.Set();
@@ -187,8 +190,9 @@ namespace MRCStudio
       }
     }
 
-    public AsynchronousClient()
+    public AsynchronousClient(string hostName)
     {
+      _hostName = hostName;
     }
   }
 }

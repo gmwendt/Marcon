@@ -1,8 +1,14 @@
 ﻿namespace AsynchronousSocketListener
 {
   using System;
+  using System.Collections;
+  using System.Collections.Generic;
+  using System.Data;
+  using System.IO;
+  using System.Linq;
   using System.Net;
   using System.Net.Sockets;
+  using System.Runtime.Serialization.Formatters.Binary;
   using System.Text;
   using System.Threading;
 
@@ -126,15 +132,14 @@
           Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",
               content.Length, content);
 
-          //Execute Non Query Command
-          //string queryStr = content.Replace("<EOF>", "");
-          //l_dbEngine.ExecuteCommand(queryStr);
-
-          // Echo the data back to the client.
-          Send(handler, content);
+          //remove eof tag
+          string queryStr = content.Replace("<EOF>", "");
+          DataTable response = processCommand(queryStr);
+          byte[] byteResponse = ConvertDataTableToByteArray(response);
+          // Echo the data baqueryStre client.
+          Send(handler, byteResponse);
         }
-        else
-        {
+        else        {
           // Not all data received. Get more.
           handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
           new AsyncCallback(ReadCallback), state);
@@ -142,13 +147,13 @@
       }
     }
 
-    private static void Send(Socket handler, String data)
+    private static void Send(Socket handler, byte[] data)
     {
       // Convert the string data to byte data using ASCII encoding.
-      byte[] byteData = Encoding.ASCII.GetBytes(data);
+      //byte[] byteData = Encoding.ASCII.GetBytes(data.ToString());
 
       // Begin sending the data to the remote device.
-      handler.BeginSend(byteData, 0, byteData.Length, 0,
+      handler.BeginSend(data, 0, data.Length, 0,
           new AsyncCallback(SendCallback), handler);
     }
 
@@ -171,6 +176,33 @@
       {
         Console.WriteLine(e.ToString());
       }
+    }
+
+    private static DataTable processCommand(string query)
+    {
+      try
+      {
+        DataTable response = _dbEngine.ReadData(query);
+        return response;
+      }
+      catch (Exception e)
+      {
+        Console.WriteLine(e.Message);
+        return null;
+      }
+    }
+
+    private static byte[] ConvertDataTableToByteArray(DataTable dataTable)
+    {
+      byte[] binaryDataResult = null;
+      using (MemoryStream memStream = new MemoryStream())
+      {
+        BinaryFormatter brFormatter = new BinaryFormatter();
+        dataTable.RemotingFormat = SerializationFormat.Binary;
+        brFormatter.Serialize(memStream, dataTable);
+        binaryDataResult = memStream.ToArray();
+      }
+      return binaryDataResult;
     }
 
     public static int Main(String[] args)

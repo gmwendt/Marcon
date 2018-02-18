@@ -15,7 +15,7 @@
     <Label x:Name="lblAuthType" Content="Authentication:" HorizontalAlignment="Left" Margin="10,43,0,0" VerticalAlignment="Top"/>
     <Label x:Name="lblUserName" Content="User Name:" HorizontalAlignment="Left" Margin="10,67,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.629,2.428"/>
     <Label x:Name="label_Copy2" Content="Password:" HorizontalAlignment="Left" Margin="10,91,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.534,3.577"/>
-    <Button x:Name="btnConnect" Content="Connect" HorizontalAlignment="Left" Margin="103,127,0,0" VerticalAlignment="Top" Width="55"/>
-    <Button x:Name="btnCancel" Content="Cancel" HorizontalAlignment="Left" Margin="168,127,0,0" VerticalAlignment="Top" Width="55" RenderTransformOrigin="0.186,1.303"/>
+    <Button x:Name="btnConnect" Content="Connect" HorizontalAlignment="Left" Margin="103,122,0,0" VerticalAlignment="Top" Width="55" Click="btnConnect_Click"/>
+    <Button x:Name="btnCancel" Content="Cancel" HorizontalAlignment="Left" Margin="168,122,0,0" VerticalAlignment="Top" Width="55" RenderTransformOrigin="0.186,1.303"/>
   </Grid>
 </Window>
